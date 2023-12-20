@@ -13,6 +13,7 @@
         let ncmb = new NCMB(appKey, clientKey);
         let UTdata = ncmb.DataStore("UpdateTest");
         let key = "score";
+        const db = "m";
 
         function enterData() {
             let uTdata = new UTdata();
@@ -56,7 +57,8 @@
                 let msg=""; 
                 for(let i=0; i<results.length; i++){ 
                     msg += results[i].get(key) + "<br>";
-                    } $("#display").removeClass(); 
+                    } 
+                    $("#display").removeClass(); 
                     $("#display").addClass("text-light");
                     $("#display").addClass("bg-primary");
                     $("#display").html(msg);
@@ -68,10 +70,24 @@
                     })
         }
 
-        function countData() {
-            $("#display").html("count does not work");
+       function bigData() {
+           let number = greaterThan($("#number").val()); 
+           let TestDataClass = ncmb.DataStore(db);
+            TestDataClass .equalTo("number", number) 
+            .fetchAll()
+            .then(function(results) {
+            showResults(results); 
+            })
         }
-
+        function smallData() {
+              let number = lessThan($("#number").val());
+               let TestDataClass = ncmb.DataStore(db);
+                TestDataClass .equalTo("number", number) 
+            .fetchAll()
+            .then(function(results) {
+            showResults(results); 
+            })
+        }
         function deleteData() {
              UTdata.fetch()  
              .then(function(results){    
@@ -107,6 +123,23 @@
                 $("#display").html("update fail:" + JSON.stringify(error)); 
             })
         }
+
+        function showResults(results) {
+      // テーブルのヘッダを生成
+      let msg = "<table><tr><th>name</th><th>Lvl</th><th>attack</th><th>defence</th></tr>";
+      for (let i = 0; i < results.length; i++) {
+        // 各データを収めた表の列を生成
+        msg += "<tr>";
+        msg += "<td>" + results[i].name + "</td>";
+        msg += "<td class='num'>" + results[i].level + "</td>";
+        msg += "<td class='num'>" + results[i].attack + "</td>";
+        msg += "<td class='num'>" + results[i].defence + "</td>";
+        msg += "</tr>";
+      }
+      // テーブルのテイラを生成
+      msg += "</table>";
+      $("#message").html(msg);
+    }
     </script>
 </head>
 
@@ -116,10 +149,14 @@
         <input type="text" id="data" placeholder="スコア">
         <a onclick="enterData()" class="btn btn-outline-secondary" role="button">Enter</a>
     </div>
+      <div>
+        <input type="text" id="number" placeholder="number">
+        <a onclick="bigData()" class="btn btn-outline-secondary" role="button">big</a>
+        <a onclick="smallData()" class="btn btn-outline-secondary" role="button">small</a>
+    </div>
     <div>
         <a onclick="fetchAll()" class="btn btn-outline-secondary" role="buton">Fetch All</a>
         <a onclick="sortData()" class="btn btn-outline-primary" role="button">Sort</a>
-        <a onclick="countData()" class="btn btn-outline-primary" role="button">Count</a>
         <a onclick="deleteData()" class="btn btn-outline-primary" role="buton">Delete</a>
     </div>
     <div>
