@@ -70,23 +70,46 @@
                     })
         }
 
-       function bigData() {
-           let number = greaterThan($("#number").val()); 
-           let TestDataClass = ncmb.DataStore(db);
-            TestDataClass .equalTo("number", number) 
+       function bigData(){
+           let number = parseInt($("#number").val()); 
+           console.log(number);
+            UTdata
+            .greaterThanOrEqualTo("score",number)
             .fetchAll()
             .then(function(results) {
-            showResults(results); 
-            })
+                 console.log(results);
+                    let msg = "";
+                    for (let i = 0; i < results.length; i++) {
+                        msg += results[i].get(key) + "<br>";
+                    }                   
+                    $("#display").html(msg);
+            })                
+            .catch(function(error) {
+                    $("#display").removeClass();
+                    $("#display").addClass("bg-warning");
+                    $("#display").html("delete fail:" + JSON.stringify(error));
+                })
         }
+
         function smallData() {
-              let number = lessThan($("#number").val());
-               let TestDataClass = ncmb.DataStore(db);
-                TestDataClass .equalTo("number", number) 
+               let number = parseInt($("#number").val()); 
+           console.log(number);
+            UTdata
+            .lessThanOrEqualTo("score",number)
             .fetchAll()
             .then(function(results) {
-            showResults(results); 
-            })
+                 console.log(results);
+                    let msg = "";
+                    for (let i = 0; i < results.length; i++) {
+                        msg += results[i].get(key) + "<br>";
+                    }                   
+                    $("#display").html(msg);
+            })                
+            .catch(function(error) {
+                    $("#display").removeClass();
+                    $("#display").addClass("bg-warning");
+                    $("#display").html("delete fail:" + JSON.stringify(error));
+                })
         }
         function deleteData() {
              UTdata.fetch()  
@@ -124,7 +147,7 @@
             })
         }
 
-        function showResults(results) {
+    function showResults(results) {
       // テーブルのヘッダを生成
       let msg = "<table><tr><th>name</th><th>Lvl</th><th>attack</th><th>defence</th></tr>";
       for (let i = 0; i < results.length; i++) {
@@ -150,7 +173,7 @@
         <a onclick="enterData()" class="btn btn-outline-secondary" role="button">Enter</a>
     </div>
       <div>
-        <input type="text" id="number" placeholder="number">
+        <input type="text" id="number" placeholder="スコア">
         <a onclick="bigData()" class="btn btn-outline-secondary" role="button">big</a>
         <a onclick="smallData()" class="btn btn-outline-secondary" role="button">small</a>
     </div>
